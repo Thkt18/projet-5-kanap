@@ -7,8 +7,8 @@ fetch("http://localhost:3000/api/products")
         donnees.forEach((canapé) => {
             console.log("canapé:", canapé)
             
-            const  {id, imageUrl, altTxt, name, description} = canapé
-            const anchor = makeAnchor(id)
+            const  {_id, imageUrl, altTxt, name, description} = canapé
+            const anchor = makeAnchor(_id)
             const article = document.createElement("article")
             const image = makeImage(imageUrl, altTxt)
             const h3 = makeH3(name)

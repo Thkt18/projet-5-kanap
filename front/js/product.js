@@ -35,7 +35,7 @@ function makePrice(price) {
 }
 
 function makeDescription(description) {
-    const p = documment.querySelector("#description")
+    const p = document.querySelector("#description")
     if (p != null) p.textContent = description
 }
 
