@@ -1,11 +1,14 @@
 const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
-const id = urlParams.get("id")
+const newID = urlParams.get("id")
 
 
-fetch(`http://localhost:3000/api/products/${id}`)
+fetch(`http://localhost:3000/api/products/${newID}`)
     .then((response) => response.json())
     .then((res) => kanapData(res))
+    .catch(_error => {
+      alert('Oops ! Le serveur ne répond pas.');
+    });
 
 function kanapData(kanap) {
     const { altTxt, colors, description, imageUrl, name, price} = kanap
@@ -14,6 +17,7 @@ function kanapData(kanap) {
     makePrice(price)
     makeDescription(description)
     makeColors(colors)
+    makeQuantity(quantity)
 }
 
 function makeImage(imageUrl, altTxt) {
@@ -39,6 +43,11 @@ function makeDescription(description) {
     if (p != null) p.textContent = description
 }
 
+function makeQuantity(quantity) {
+    let makeQuantity = document.getElementById("quantity");
+    return quantity.value;
+}
+
 
 function makeColors(colors) {
     const select = document.querySelector("#colors")
@@ -51,3 +60,63 @@ function makeColors(colors) {
         })
     }
 }
+
+
+
+
+const selectQuantity = document.getElementById('quantity');
+const selectColors = document.getElementById('colors');
+
+
+const addToCart = document.getElementById('addToCart');
+addToCart.addEventListener('click', (event) => {
+  event.preventDefault();
+
+  const selection = {
+    id: newID,
+    image: makeImage,
+    name: makeTitle,
+    price: makePrice,
+    color: makeColors,
+    quantity: makeQuantity,
+  };
+
+  let productInLocalStorage =  JSON.parse(localStorage.getItem('product'));
+
+
+  const addProductLocalStorage = () => {
+  productInLocalStorage.push(selection);
+  localStorage.setItem('product', JSON.stringify(productInLocalStorage));
+  }
+
+
+  let addConfirm = () => {
+    alert('Le produit a bien été ajouté au panier');
+  }
+
+  let update = false;
+  
+
+  if (productInLocalStorage) {
+   productInLocalStorage.forEach (function (productOk, key) {
+    if (productOk.id == newID && productOk.color == selectColors.value) {
+      productInLocalStorage[key].quantity = parseInt(productOk.quantity) + parseInt(selectQuantity.value);
+      localStorage.setItem('product', JSON.stringify(productInLocalStorage));
+      update = true;
+      addConfirm();
+    }
+  });
+
+  //
+    if (!update) {
+    addProductLocalStorage();
+    addConfirm();
+    }
+  }
+ 
+  else {
+    productInLocalStorage = [];
+    addProductLocalStorage();
+    addConfirm();
+  }
+});
