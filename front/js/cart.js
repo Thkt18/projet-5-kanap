@@ -152,3 +152,10 @@ function priceAmount() {
 priceAmount();
 
 } // fin else : s'il y a des produits dans le panier
+
+// Informations de l'utilisateur
+// Récupérer les données du formulaires
+// Vérifier la validations des entrées (nom, mail, etc)
+// Envoyer le formulaire dans le localstorage
+
+

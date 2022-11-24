@@ -67,8 +67,8 @@ addToCart.addEventListener('click', (event) => {
 
   /* je déclare une variable productInLocalStorage 
   dans laquelle je mets les clés+valeurs dans le local storage
-  JSON.parse permet de convertir les données au format JSON en objet JavaScript
-  let productInLocalStorage =  JSON.parse(localStorage.getItem('product')); */
+  JSON.parse permet de convertir les données au format JSON en objet JavaScript */
+  let productInLocalStorage =  JSON.parse(localStorage.getItem('product'));
 
   // j'ajoute les produits sélectionnés dans le localStorage
   const addProductLocalStorage = () => {
@@ -79,8 +79,8 @@ addToCart.addEventListener('click', (event) => {
   productInLocalStorage.push(selection);
   /* je stocke les données récupérées dans le localStorage :
   JSON.stringify permet de convertir les données au format JavaScript en JSON 
-  vérifier que key et value dans l'inspecteur contiennent bien des données
-  localStorage.setItem('product', JSON.stringify(productInLocalStorage)); */
+  vérifier que key et value dans l'inspecteur contiennent bien des données */
+  localStorage.setItem('product', JSON.stringify(productInLocalStorage));
   }
 
   // je crée une boîte de dialogue pour confirmer l'ajout au panier
@@ -93,7 +93,6 @@ addToCart.addEventListener('click', (event) => {
   // s'il y a des produits enregistrés dans le localStorage
   if (productInLocalStorage) {
   // verifier que le produit ne soit pas deja dans le localstorage/panier avec la couleur
-
    productInLocalStorage.forEach (function (productOk, key) {
     if (productOk.id == newID && productOk.color == selectColors.value) {
       productInLocalStorage[key].quantity = parseInt(productOk.quantity) + parseInt(selectQuantity.value);
