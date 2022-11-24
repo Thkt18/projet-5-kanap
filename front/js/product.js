@@ -1,103 +1,99 @@
-const queryString = window.location.search
-const urlParams = new URLSearchParams(queryString)
-const newID = urlParams.get("id")
+// Je redirige l'url de l'api
+
+// je crée une nouvelle url à partir de l'url actuelle 
+// et en ajoutant searchParams pour manipuler les paramètres de requête d'URL :
+let params = new URL(window.location.href).searchParams;
+// j'indique que la nouvelle url sera ajoutée d'un id :
+let newID = params.get('id');
 
 
-fetch(`http://localhost:3000/api/products/${newID}`)
-    .then((response) => response.json())
-    .then((res) => kanapData(res))
-    .catch(_error => {
-      alert('Oops ! Le serveur ne répond pas.');
-    });
+// J'apelle de nouveau l'api avec l'id du canapé
 
-function kanapData(kanap) {
-    const { altTxt, colors, description, imageUrl, name, price} = kanap
-    makeImage(imageUrl, altTxt)
-    makeTitle(name)
-    makePrice(price)
-    makeDescription(description)
-    makeColors(colors)
-    makeQuantity(quantity)
-}
+// je crée les variables dont j'ai besoin pour manipuler cette page :
+const image = document.getElementsByClassName('item__img');
+const title = document.getElementById('title');
+const price = document.getElementById('price');
+const description = document.getElementById('description');
+const colors = document.getElementById('colors');
 
-function makeImage(imageUrl, altTxt) {
-    const image = document.createElement("img")
-    image.src = imageUrl
-    image.alt = altTxt
-    const parent = document.querySelector(".item__img ")
-    if (parent != null) parent.appendChild(image)
-}
+let imageURL = "";
+let imageAlt = "";
 
-function makeTitle(name) {
-    const h1 = document.querySelector("#title")
-    if (h1 != null) h1.textContent = name
-}
+// je crée la bonne URL pour chaque produits choisi en ajoutant newID
+fetch("http://localhost:3000/api/products/" + newID)
+  .then(res => res.json())
+  .then(data => {
+    // je modifie le contenu de chaque variable avec les bonnes données :
+    image[0].innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
+    imageURL = data.imageUrl;
+    imageAlt = data.altTxt;
+    title.innerHTML = `<h1>${data.name}</h1>`;
+    price.innerText = `${data.price}`;
+    description.innerText = `${data.description}`;
 
-function makePrice(price) {
-    const span = document.querySelector("#price")
-    if (span != null) span.textContent = price
-}
-
-function makeDescription(description) {
-    const p = document.querySelector("#description")
-    if (p != null) p.textContent = description
-}
-
-function makeQuantity(quantity) {
-    let makeQuantity = document.getElementById("quantity");
-    return quantity.value;
-}
-
-
-function makeColors(colors) {
-    const select = document.querySelector("#colors")
-    if (select != null) {
-        colors.forEach((color) => {
-            const option = document.createElement("option")
-            option.value = color
-            option.textContent = color
-            select.appendChild(option)
-        })
+    // je configure le choi des couleurs 
+    for (number in data.colors) {
+      colors.options[colors.options.length] = new Option(
+        data.colors[number],
+        data.colors[number]
+      );
     }
-}
+  })
+    // j'ajoute un message au cas où le serveur ne répond pas
+  .catch(_error => {
+    alert('Le serveur ne répond pas.');
+  });
 
 
-
+// Je récupère les données par rapport aux choix de l'utilisateur
 
 const selectQuantity = document.getElementById('quantity');
 const selectColors = document.getElementById('colors');
 
-
+// je configure un eventListener quand l'utilisateur clique sur ajouter au panier
 const addToCart = document.getElementById('addToCart');
 addToCart.addEventListener('click', (event) => {
   event.preventDefault();
 
   const selection = {
     id: newID,
-    image: makeImage,
-    name: makeTitle,
-    price: makePrice,
-    color: makeColors,
-    quantity: makeQuantity,
+    image: imageURL,
+    alt: imageAlt,
+    name: title.textContent,
+    price: price.textContent,
+    color: selectColors.value,
+    quantity: selectQuantity.value,
   };
 
-  let productInLocalStorage =  JSON.parse(localStorage.getItem('product'));
+  /* je déclare une variable productInLocalStorage 
+  dans laquelle je mets les clés+valeurs dans le local storage
+  JSON.parse permet de convertir les données au format JSON en objet JavaScript
+  let productInLocalStorage =  JSON.parse(localStorage.getItem('product')); */
 
-
+  // j'ajoute les produits sélectionnés dans le localStorage
   const addProductLocalStorage = () => {
+  /* je récupère la sélection de l'utilisateur dans le tableau de l'objet :
+  on peut voir dans la console qu'il y a les données,
+  mais pas encore stockées dans le storage à ce stade */
+
   productInLocalStorage.push(selection);
-  localStorage.setItem('product', JSON.stringify(productInLocalStorage));
+  /* je stocke les données récupérées dans le localStorage :
+  JSON.stringify permet de convertir les données au format JavaScript en JSON 
+  vérifier que key et value dans l'inspecteur contiennent bien des données
+  localStorage.setItem('product', JSON.stringify(productInLocalStorage)); */
   }
 
-
+  // je crée une boîte de dialogue pour confirmer l'ajout au panier
   let addConfirm = () => {
     alert('Le produit a bien été ajouté au panier');
   }
 
   let update = false;
   
-
+  // s'il y a des produits enregistrés dans le localStorage
   if (productInLocalStorage) {
+  // verifier que le produit ne soit pas deja dans le localstorage/panier avec la couleur
+
    productInLocalStorage.forEach (function (productOk, key) {
     if (productOk.id == newID && productOk.color == selectColors.value) {
       productInLocalStorage[key].quantity = parseInt(productOk.quantity) + parseInt(selectQuantity.value);
@@ -113,8 +109,10 @@ addToCart.addEventListener('click', (event) => {
     addConfirm();
     }
   }
- 
+
+  // s'il n'y a aucun produit enregistré dans le localStorage 
   else {
+    // je crée alors un tableau avec les éléments choisi par l'utilisateur
     productInLocalStorage = [];
     addProductLocalStorage();
     addConfirm();

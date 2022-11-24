@@ -1,63 +1,40 @@
-fetch("http://localhost:3000/api/products")
-    .then((res) => res.json())
-    .then((data) => addProducts(data))
-    .catch((err) => console.log(err));
+//---------JE FAIS APPEL A L'API QUI CONTIENT LES PRODUITS---------
 
-    function addProducts(donnees) {
+//je demande à fetch de récupérer les données depuis l'url de l'API : 
+fetch('http://localhost:3000/api/products')
+    /* première promesse .then qui va récupérer la réponse et la
+    transformer en json pour faciliter l'intérprétation par le navigateur : */
+  .then(res => res.json())
+    /* deuxième promesse .then qui va afficher les données
+    contenues dans ma fonction addProducts : */
+  .then(data => { 
+    addProducts(data);
+  })
+  // j'ajoute un message au cas où le serveur ne répond pas
+  .catch(_error => {
+    alert('Le serveur ne répond pas.');
+  });
 
-        donnees.forEach((canapé) => {
-            console.log("canapé:", canapé)
-            
-            const  {_id, imageUrl, altTxt, name, description} = canapé
-            const anchor = makeAnchor(_id)
-            const article = document.createElement("article")
-            const image = makeImage(imageUrl, altTxt)
-            const h3 = makeH3(name)
-            const p = makeParagraph(description)
+  //J'affiche tous les produits grâce à ma fonction addProducts
 
-            appendElementsToArticle(article, image, h3, p)
-            appendChildren(anchor, article)
-        })
+function addProducts(data) {
+    // pour ma variable product de ma promise .then data
+    for (product of data) {
+        // trouver l'élément #items dans index.html...
+        const itemCard = document.getElementById('items');
+        /* le modifier avec le contenu entre ``
+        le + sert à ajouter tous les éléments tant qu'il y en a */
+        itemCard.innerHTML +=`
+        <a href="./product.html?id=${product._id}">
+        <article>
+          <img src="${product.imageUrl}" alt="${product.altTxt}">
+          <h3 class="productName">${product.name}</h3>
+          <p class="productDescription">${product.description}</p>
+        </article>
+        </a>
+      `; 
+      /* le ${} est une nouvelle forme de concaténation
+      qui permet de directement combiner des variables et des clés 
+      dans un objet ou tableau */
     }
-
-    function appendElementsToArticle(article, image, h3, p) {
-        article.appendChild(image)
-        article.appendChild(h3)
-        article.appendChild(p)
-    }
-
-    function makeAnchor(id) {
-        const anchor = document.createElement("a")
-        anchor.href = "./product.html?id=" + id
-        return anchor
-    }
-
-    function appendChildren(anchor, article) {
-        const items = document.querySelector("#items")
-        if (items != null) {
-            items.appendChild(anchor)
-            anchor.appendChild(article)
-        }
-    }
-
-function makeImage(imageUrl, altTxt) {
-    const image = document.createElement("img")
-    image.src = imageUrl
-    image.alt = altTxt
-    return image
 }
-
-
-function makeH3(name) {
-    const h3 = document.createElement("h3")
-    h3.textContent = name
-    h3.classList.add("productName")
-    return h3
-}
-
-function makeParagraph(description) {
-    const p = document.createElement("p")
-    p.textContent = description
-    p.classList.add("productDescription")
-    return p
- }
