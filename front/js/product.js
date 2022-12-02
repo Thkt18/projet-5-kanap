@@ -31,6 +31,7 @@ fetch("http://localhost:3000/api/products/" + newID)
     price.innerText = `${data.price}`;
     description.innerText = `${data.description}`;
 
+
     // je configure le choi des couleurs 
     for (number in data.colors) {
       colors.options[colors.options.length] = new Option(
@@ -68,8 +69,26 @@ addToCart.addEventListener('click', (event) => {
   /* je déclare une variable productInLocalStorage 
   dans laquelle je mets les clés+valeurs dans le local storage
   JSON.parse permet de convertir les données au format JSON en objet JavaScript */
-  let productInLocalStorage =  JSON.parse(localStorage.getItem('product'));
+  let productInLocalStorage =  JSON.parse(localStorage.getItem('product')); {
 
+    // J'ai ajouté deux conditions, si la quantité n'est pas séléctionnés alors
+    // un pop up s'affiche.
+    if (selectQuantity.value <= 0) {
+      alert('Veuillez selectionnée ou quantité.')
+      return; 
+    }
+    // Si la couleur n'est pas séléctionnés alors un pop up s'affiche.
+    if (selectColors.value <= 0) {
+      alert('Veuillez selectionné une couleur.')
+      return;
+    }
+
+    else  {
+      alert('Le produit a bien été ajouté au panier');
+      }
+  
+  }
+ 
   // j'ajoute les produits sélectionnés dans le localStorage
   const addProductLocalStorage = () => {
   /* je récupère la sélection de l'utilisateur dans le tableau de l'objet :

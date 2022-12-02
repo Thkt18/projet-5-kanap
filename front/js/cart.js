@@ -8,20 +8,20 @@ let productInLocalStorage = JSON.parse(localStorage.getItem('product'));
 let cartAndFormContainer = document.getElementById('cartAndFormContainer');
 
   // si le panier est vide : afficher 'le panier est vide'
-  if(productInLocalStorage === null || productInLocalStorage == 0) {
-    document.querySelector("#cart__items").innerHTML =`
-    <div class="cart__empty">
-      <p>Votre panier est vide ! <br> Merci de sélectionner des produits depuis la page d'accueil</p>
-    </div>`;
-  }
+if(productInLocalStorage === null || productInLocalStorage == 0) {
+  document.querySelector("#cart__items").innerHTML =`
+  <div class="cart__empty">
+    <p>Votre panier est vide ! <br> Merci de sélectionner des produits depuis la page d'accueil</p>
+  </div>`;
+} else{
   // si le panier n'est pas vide : afficher les produits dans le localStorage
-  else{
-    let itemCards = [];
-  
-    // expression initiale; condition; incrémentation
-    for (i = 0; i < productInLocalStorage.length; i++) {
+
+  let itemCards = [];
+
+  // expression initiale; condition; incrémentation
+  for (i = 0; i < productInLocalStorage.length; i++) {
     products.push(productInLocalStorage[i].id);
-  
+
     /* le code suivant sera injecté à chaque tour de boucle
     selon la longueur des produits dans le local storage */
 
@@ -49,27 +49,27 @@ let cartAndFormContainer = document.getElementById('cartAndFormContainer');
       </div>
     </article>
       `;
-    }
+  }
   if (i === productInLocalStorage.length) {
-  const itemCart = document.getElementById('cart__items');
-  itemCart.innerHTML += itemCards;
+    const itemCart = document.getElementById('cart__items');
+    itemCart.innerHTML += itemCards;
   }
 
-// je modifie la quantité dans le panier
+  // je modifie la quantité dans le panier
 
-changeQtt();
+  changeQtt();
 
-// je supprime un produit dans le panier
+  // je supprime un produit dans le panier
 
-deleteArticle();
+  deleteArticle();
 
-// j'affiche le total des articles dans le panier
+  // j'affiche le total des articles dans le panier
 
-totalArticles();
+  totalArticles();
 
-// je calcule le montant total du panier
+  // je calcule le montant total du panier
 
-priceAmount();
+  priceAmount();
 
 } // fin else : s'il y a des produits dans le panier
 
@@ -84,8 +84,8 @@ function deleteArticle() {
     let deleteId = productInLocalStorage[k].id;
     let deleteColor = productInLocalStorage[k].color;
 
-    // filtrer l'élément cliqué par le bouton supprimer
-    // en respectant les conditions du callback
+    // filtrer l'élément cliqué par le bouton supprimer en respectant les conditions du callback
+
     productInLocalStorage = productInLocalStorage.filter( elt => elt.id !== deleteId || elt.color !== deleteColor);
       
     // envoyer les nouvelles données dans le localStorage
@@ -102,31 +102,31 @@ function changeQtt() {
   let itemQtt = document.querySelectorAll('.itemQuantity');
   for (let j = 0; j < itemQtt.length; j++) {
     itemQtt[j].addEventListener('change', (event) => {
-    event.preventDefault();
-    /* sélection de la nouvelle quantité
-    qu'on va sauvegarder dans un nouveau tableau
-    avec les autres éléments du localStorage */
-    let itemNewQtt = itemQtt[j].value;
-    const newLocalStorage = {
-      id: productInLocalStorage[j].id,
-      image: productInLocalStorage[j].image,
-      alt: productInLocalStorage[j].alt,
-      name: productInLocalStorage[j].name,
-      color: productInLocalStorage[j].color,
-      price: productInLocalStorage[j].price,   
-      quantity: itemNewQtt, // avec la nouvelle quantité souhaitée
-    };
+      event.preventDefault();
+      /* sélection de la nouvelle quantité
+      qu'on va sauvegarder dans un nouveau tableau
+      avec les autres éléments du localStorage */
+      let itemNewQtt = itemQtt[j].value;
+      const newLocalStorage = {
+        id: productInLocalStorage[j].id,
+        image: productInLocalStorage[j].image,
+        alt: productInLocalStorage[j].alt,
+        name: productInLocalStorage[j].name,
+        color: productInLocalStorage[j].color,
+        price: productInLocalStorage[j].price,   
+        quantity: itemNewQtt, // avec la nouvelle quantité souhaitée
+      };
 
-    // actualiser le localStorage avec les nouvelles données récupérées... 
-    productInLocalStorage[j] = newLocalStorage;
-    // en transformant les Js en Json
-    localStorage.setItem('product', JSON.stringify(productInLocalStorage));
+      // actualiser le localStorage avec les nouvelles données récupérées... 
+      productInLocalStorage[j] = newLocalStorage;
+      // en transformant les Js en Json
+      localStorage.setItem('product', JSON.stringify(productInLocalStorage));
 
-    // avertir de la modification et mettre à jour les totaux
-    alert('Votre panier est à jour.');
-    totalArticles();
-    priceAmount();
-      })
+      // avertir de la modification et mettre à jour les totaux
+      alert('Votre panier est à jour.');
+      totalArticles();
+      priceAmount();
+    })
   }
 }
 
@@ -275,10 +275,9 @@ function postForm() {
   fetch("http://localhost:3000/api/products/order", options)
     .then(response => response.json())
     .then(data => {
-      localStorage.setItem('orderId', data.orderId);
-        if (validControl()) {
-          document.location.href = 'confirmation.html?id='+ data.orderId;
-        }
+
+      localStorage.setItem("article", data.orderId);
+      document.location.href = 'confirmation.html?id=' + data.orderId
     });
 
 })
