@@ -171,6 +171,12 @@ function postForm() {
   const order = document.getElementById('order');
   order.addEventListener('click', (event) => {
   event.preventDefault();
+  //  J'ai ajouté une condition pour qu'il soit
+  // impossible de commander sans avoir sélectionner un article.
+  if (productInLocalStorage === null || productInLocalStorage == 0) {
+    alert('Votre panier est vide ! Merci de sélectionner des produits depuis la page d\'accueil')
+    return; 
+  }
 
   // je récupère les données du formulaire dans un objet
   const contact = {
@@ -183,7 +189,6 @@ function postForm() {
 
 
   // Vérification des entrées avec Regex
-
   
   //contrôle prénom
   function controlFirstName() {
@@ -229,8 +234,6 @@ function postForm() {
     }
   }
 
-  
-
   // contrôle email
   function controlEmail() {
     const validEmail = contact.email;
@@ -247,12 +250,16 @@ function postForm() {
 
   function validControl() {
     if (controlFirstName() && controlName() && controlAddress() && controlCity() && controlEmail()) {
-      localStorage.setItem('contact', JSON.stringify(contact));
+      // J'ai supprimé cette ligne pour que le contact apparaissent plus dans le localStorage
+      // localStorage.setItem('contact', JSON.stringify(contact));
       return true;
     } else {
         alert('Merci de revérifier les données du formulaire')
+        return;
       }
   }
+
+
   validControl()
 
   // je mets les valeurs du formulaire et les produits sélectionnés dans un objet
@@ -275,8 +282,8 @@ function postForm() {
   fetch("http://localhost:3000/api/products/order", options)
     .then(response => response.json())
     .then(data => {
-
-      localStorage.setItem("article", data.orderId);
+      // J'ai supprimer cette ligne pour que l'orderID ne soit plus dans le localStorage.
+      // localStorage.setItem("orderID", data.orderId);
       document.location.href = 'confirmation.html?id=' + data.orderId
     });
 
