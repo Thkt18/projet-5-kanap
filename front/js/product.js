@@ -1,5 +1,4 @@
 // Je redirige l'url de l'api
-
 // je crée une nouvelle url à partir de l'url actuelle 
 // et en ajoutant searchParams pour manipuler les paramètres de requête d'URL :
 let params = new URL(window.location.href).searchParams;
@@ -30,6 +29,8 @@ fetch("http://localhost:3000/api/products/" + newID)
     title.innerHTML = `<h1>${data.name}</h1>`;
     price.innerText = `${data.price}`;
     description.innerText = `${data.description}`;
+    // Je modifie le titre de la page avec le nom du canapé choisit
+    document.title = data.name;
 
 
     // je configure le choi des couleurs 
@@ -73,8 +74,8 @@ addToCart.addEventListener('click', (event) => {
 
     // J'ai ajouté deux conditions, si la quantité n'est pas séléctionnés alors
     // un pop up s'affiche.
-    if (selectQuantity.value <= 0) {
-      alert('Veuillez selectionnée ou quantité.')
+    if (selectQuantity.value < 1 || selectQuantity.value > 100) {
+      alert('Veuillez selectionnée une quantité entre 1 et 100.')
       return; 
     }
     // Si la couleur n'est pas séléctionnés alors un pop up s'affiche.
@@ -83,9 +84,6 @@ addToCart.addEventListener('click', (event) => {
       return;
     }
 
-    else  {
-      alert('Le produit a bien été ajouté au panier');
-      }
   
   }
  

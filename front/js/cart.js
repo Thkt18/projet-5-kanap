@@ -4,11 +4,13 @@ let productInLocalStorage = JSON.parse(localStorage.getItem('product'));
 
 // Affichez les produits du panier
 
+
 // je sélectionne la partie html concernée par la modification
 let cartAndFormContainer = document.getElementById('cartAndFormContainer');
 
   // si le panier est vide : afficher 'le panier est vide'
 if(productInLocalStorage === null || productInLocalStorage == 0) {
+  alert('Votre panier est vide ! Merci de sélectionner des produits depuis la page d\'accueil')
   document.querySelector("#cart__items").innerHTML =`
   <div class="cart__empty">
     <p>Votre panier est vide ! <br> Merci de sélectionner des produits depuis la page d'accueil</p>
@@ -170,13 +172,14 @@ function totalArticles() {
 function postForm() {
   const order = document.getElementById('order');
   order.addEventListener('click', (event) => {
-  event.preventDefault();
-  //  J'ai ajouté une condition pour qu'il soit
-  // impossible de commander sans avoir sélectionner un article.
-  if (productInLocalStorage === null || productInLocalStorage == 0) {
-    alert('Votre panier est vide ! Merci de sélectionner des produits depuis la page d\'accueil')
-    return; 
-  }
+    event.preventDefault();
+    //  J'ai ajouté une condition pour qu'il soit
+    // impossible de commander sans avoir sélectionner un article.
+    if (productInLocalStorage === null || productInLocalStorage == 0) {
+      alert('Votre panier est vide ! Merci de sélectionner des produits depuis la page d\'accueil')
+      return false; 
+    } 
+  
 
   // je récupère les données du formulaire dans un objet
   const contact = {
@@ -193,8 +196,7 @@ function postForm() {
   //contrôle prénom
   function controlFirstName() {
     const validFirstName = contact.firstName;
-    if (/^[A-Z][A-Za-z\é\è\ê\-]+$/.test(validFirstName)) {
-      return true;
+    if (/^[A-Z][A-Za-z\é\è\ê\-]{3,25}$/.test(validFirstName)) {
     } else {
       let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
       firstNameErrorMsg.innerText = "Merci de vérifier le prénom, 3 caractères minimum";
@@ -204,8 +206,7 @@ function postForm() {
   // contrôle nom
   function controlName() {
     const validName = contact.lastName;
-    if (/^[A-Z][A-Za-z\é\è\ê\-]+$/.test(validName)) {
-      return true;
+    if (/^[A-Z][A-Za-z\é\è\ê\-]{3,25}$/.test(validName)) {
     } else {
       let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
       lastNameErrorMsg.innerText = "Merci de vérifier le nom, 3 caractères minimum, avec des lettres uniquement";
@@ -215,8 +216,7 @@ function postForm() {
   // contrôle adresse
   function controlAddress() {
     const validAddress = contact.address;
-    if (/^[a-zA-Z0-9.,-_ ]{5,50}[ ]{0,2}$/.test(validAddress)) {
-      return true;
+    if (/^[a-zA-Z0-9.,-_ ]{5,70}[ ]{0,2}$/.test(validAddress)) {
     } else {
       let addressErrorMsg = document.getElementById('addressErrorMsg');
       addressErrorMsg.innerText = "Merci de vérifier l'adresse, alphanumérique et sans caractères spéciaux";
@@ -226,8 +226,7 @@ function postForm() {
   // contrôle ville
   function controlCity() {
     const validAddress = contact.city;
-    if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{3,50}$/.test(validAddress)) {
-      return true;
+    if (/^[A-Z][A-Za-z\é\è\ê\-]{3,25}$/.test(validAddress)) {
     } else {
       let cityErrorMsg = document.getElementById('cityErrorMsg');
       cityErrorMsg.innerText = "Merci de vérifier le nom de la ville, 3 caractères minimum, avec des lettres uniquement";
@@ -238,7 +237,6 @@ function postForm() {
   function controlEmail() {
     const validEmail = contact.email;
     if (/^[A-Za-z0-9+_.-]+@(.+)$/.test(validEmail)) {
-      return true;
     } else {
       let emailErrorMsg = document.getElementById('emailErrorMsg');
       emailErrorMsg.innerText = "Erreur ! Email non valide";
@@ -255,10 +253,9 @@ function postForm() {
       return true;
     } else {
         alert('Merci de revérifier les données du formulaire')
-        return;
+      return false
       }
   }
-
 
   validControl()
 
@@ -284,12 +281,12 @@ function postForm() {
     .then(data => {
       // J'ai supprimer cette ligne pour que l'orderID ne soit plus dans le localStorage.
       // localStorage.setItem("orderID", data.orderId);
+      if (validControl()) {
       document.location.href = 'confirmation.html?id=' + data.orderId
+    }
     });
 
 })
 }
+
 postForm();
-
-
-
