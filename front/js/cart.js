@@ -100,15 +100,20 @@ console.table(productInLocalStorage)
                 paraDelete.innerHTML = "Supprimer"
                 
                 
-                //Calcul prix total panier
-
+              
+                // je supprime un produit dans le panier
                 deleteArticle();
 
+                // je modifie la quantité dans le panier
                 changeQtt();
 
+                // j'affiche le total des articles dans le panier
+                totalArticles();
+                
+                // je calcule le montant total du panier
                 priceAmount();
 
-                totalArticles();
+                
 
             
                 // Fonction pour supprimer un article du panier
@@ -204,8 +209,6 @@ console.table(productInLocalStorage)
                                   calculPrice.textContent = totalPrice;
                       });
                   }
-                
-
             }
             })
     }
