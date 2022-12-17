@@ -2,6 +2,17 @@
 let productInLocalStorage = JSON.parse(localStorage.getItem("product"));
 console.table(productInLocalStorage)
 
+// Si le localStorage est vide :
+if(productInLocalStorage === null || productInLocalStorage == 0) {
+  alert('Votre panier est vide ! Merci de sélectionner des produits depuis la page d\'accueil')
+  document.querySelector("#cart__items").innerHTML =`
+  <div class="cart__empty">
+    <p>Votre panier est vide ! <br> Merci de sélectionner des produits depuis la page d'accueil</p>
+  </div>`;
+} 
+
+// Si le localStorage comporte un ou des éléments :
+else{
 
 // Je crée ici une boucle pour parcourir le tableau des produits stockés dans le localstorage
     for (let j = 0; j < productInLocalStorage.length; j++) {
@@ -212,6 +223,7 @@ console.table(productInLocalStorage)
             }
             })
     }
+  }
 
     
     
