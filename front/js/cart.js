@@ -1,5 +1,4 @@
-// Récupérer les produts stockés dans le localstorage sous forme de tableau
-
+// Récupérer les produts stockés dans le localstorage (sous forme de tableau console.log)
 let productInLocalStorage = JSON.parse(localStorage.getItem("product"));
 console.table(productInLocalStorage)
 
@@ -182,54 +181,38 @@ console.table(productInLocalStorage)
 
                 // Fonction pour calculer le prix total du panier
                 function priceAmount() {
+                  // Récupération du tableau d'articles stocké dans le local storage
+                  let productInLocalStorage = JSON.parse(localStorage.getItem("product"));
+                
+                  // Initialisation du prix total à 0
                   let totalPrice = 0;
                   const calculPrice = document.getElementById ("totalPrice");
 
-                  for (let m = 0; m < productInLocalStorage.length; m++) {
-                    console.log(productInLocalStorage[m].quantity)
-
-                    fetch(`http://localhost:3000/api/products/${productInLocalStorage[j].id}`)
-                    .then(response => response.json())
-                    .then(data => {
-                      console.log(data.price)
-
-                      totalPrice = productInLocalStorage[m].quantity * data.price;
-                      console.log(totalPrice)
-                      calculPrice.textContent = totalPrice;
-                    })
-                }
-
-
-
-
-
-
-
-
-
-
-
-
-
-                function totalArticles() {
-                  let totalItems = 0;
-                  for (l in productInLocalStorage) {
-                    /* analyser et convertir la valeur 'quantité' dans le localstorage en une chaîne
-                    et renvoie un entier (parseInteger), sur la base décimale de 10*/
-                    const newQuantity = parseInt(productInLocalStorage[l].quantity, 10);
                 
-                    // attribuer la valeur retournée par parseInt à la variable totalItems
-                    totalItems += newQuantity;
+                  // Pour chaque article dans le tableau
+                  for (let m = 0; m < productInLocalStorage.length; m++) {
+                    // Récupération de l'ID de l'article
+                    let productId = productInLocalStorage[m].id;
+                
+                    // Appel de l'API pour récupérer les détails de l'article
+                    fetch(`http://localhost:3000/api/products/${productId}`)
+                      .then(response => response.json())
+                      .then(data => {
+                        // Mise à jour du prix total en ajoutant le prix de l'article actuel
+                        totalPrice = productInLocalStorage[m].quantity * data.price;
+                                  console.log(totalPrice)
+                                  calculPrice.textContent = totalPrice;
+                      });
                   }
-                    // attribuer à #totalQuantité la valeur de totalItems et l'afficher dans le DOM
-                    const totalQuantity = document.getElementById('totalQuantity');
-                    totalQuantity.textContent = totalItems;
-                }
+                
+
             }
             })
     }
 
-
+    
+    
+    
 
 //     // Récupérer les produts stockés dans le localstorage
 // let products = [];
