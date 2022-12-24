@@ -337,6 +337,7 @@ function verifEmail() {
     return false;
   }
 }
+
 //évènement au clic de la souris sur "commander"
 btnSubmit.addEventListener("click", (event) => {
   //on écoute la valeur des champs et leur validité
@@ -381,8 +382,6 @@ function send() {
         "Content-Type": "application/json",
       },
     })
-      // .then((res) => res.json())
-      // .then((data) => console.log(data)) //=> me permet de voir ce que j'envoie au back
 
       // Récupération et stockage de la réponse de l'API (orderId)
 
@@ -404,5 +403,3 @@ function send() {
     /* console.log("fonction non validée"); */
   }
   }
-
-//     FIN !
