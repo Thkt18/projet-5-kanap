@@ -193,8 +193,8 @@ function totalQuantity() {
   let totalQuantity = [];
 
   let total = 0;
-  for (let article of productInLocalStorage) {
-    total += article.quantity;
+  for (let product of productInLocalStorage) {
+    total += parseInt(product.quantity);
   }
   totalQuantity.push(total);
 
