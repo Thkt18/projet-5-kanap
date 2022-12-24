@@ -1,6 +1,6 @@
 //---------JE FAIS APPEL A L'API QUI CONTIENT LES PRODUITS---------
 
-//je demande à fetch de récupérer les données depuis l'url de l'API : 
+//je fais un fetch pour récupérer les données depuis l'url de l'API : 
 fetch('http://localhost:3000/api/products')
     /* première promesse .then qui va récupérer la réponse et la
     transformer en json pour faciliter l'intérprétation par le navigateur : */
@@ -15,7 +15,7 @@ fetch('http://localhost:3000/api/products')
     alert('Le serveur ne répond pas.');
   });
 
-  //J'affiche tous les produits grâce à ma fonction addProducts
+//J'affiche tous les produits grâce à ma fonction addProducts
 
 function addProducts(data) {
     // pour ma variable product de ma promise .then data
