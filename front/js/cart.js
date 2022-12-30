@@ -226,11 +226,7 @@ function totalPrice() {
 
 
 
-
-
 //FORMULAIRE
-
-
 
 
 let product = [];
@@ -284,7 +280,7 @@ function verifFirstName() {
     firstNameErrorMsg.textContent = "saisie enregistrée";
     return true;
   } else {
-    firstNameErrorMsg.textContent = "Veuillez renseigner un prénom valide !";
+    firstNameErrorMsg.textContent = "Veuillez renseigner un prénom valide avec un minimum de 3 caractères !";
 
     return false;
   }
@@ -296,7 +292,7 @@ function verifLastName() {
     lastNameErrorMsg.textContent = "saisie enregistrée";
     return true;
   } else {
-    lastNameErrorMsg.textContent = "Veuillez renseigner un nom valide !";
+    lastNameErrorMsg.textContent = "Veuillez renseigner un nom valide avec un minimum de 3 cractères !";
 
     return false;
   }
@@ -396,10 +392,10 @@ function send() {
           location.href = "confirmation.html?orderid=" + orderId;
         }
       });
-  } else {
-    alert(
-      "Votre panier est vide ! Merci de sélectionner des produits depuis la page d\'accueil"
-    );
+  } //else {
+    //alert(
+      //"Votre panier est vide ! Merci de sélectionner des produits depuis la page d\'accueil"
+    //);
     /* console.log("fonction non validée"); */
-  }
+  //}
   }
