@@ -1,25 +1,29 @@
 // Je redirige l'url de l'api
 // je crée une nouvelle url à partir de l'url actuelle 
 // et en ajoutant searchParams pour manipuler les paramètres de requête d'URL :
-let params = new URL(window.location.href).searchParams;
+
 // j'indique que la nouvelle url sera ajoutée d'un id :
-let newID = params.get('id');
 
-
-// J'apelle de nouveau l'api avec l'id du canapé
-
+let KanapAPI = "http://localhost:3000/api/products/";
+const currentLocation = window.location;
+const url = new URL(currentLocation);
+const id = url.searchParams.get("id")
+KanapAPI = KanapAPI + id;
 // je crée les variables dont j'ai besoin pour manipuler cette page :
 const image = document.getElementsByClassName('item__img');
 const title = document.getElementById('title');
 const price = document.getElementById('price');
 const description = document.getElementById('description');
-const colors = document.getElementById('colors');
+const colors = document.querySelector('#colors');
+
+const quantity = document.querySelector("#quantity");
+const toCart = document.getElementById("addToCart");
 
 let imageURL = "";
 let imageAlt = "";
 
 // je crée la bonne URL pour chaque produits choisi en ajoutant newID
-fetch("http://localhost:3000/api/products/" + newID)
+fetch(KanapAPI)
   .then(res => res.json())
   .then(data => {
     // je modifie le contenu de chaque variable avec les bonnes données :
@@ -31,106 +35,79 @@ fetch("http://localhost:3000/api/products/" + newID)
     description.innerText = `${data.description}`;
     // Je modifie le titre de la page avec le nom du canapé choisit
     document.title = data.name;
-
-
-    // je configure le choi des couleurs 
-    for (number in data.colors) {
-      colors.options[colors.options.length] = new Option(
-        data.colors[number],
-        data.colors[number]
-      );
+//  Ajouts des options de couleurs
+    for (let addColor of data.colors) {
+        const newColor = document.createElement("option");
+        newColor.setAttribute("value", `${addColor}`);
+        newColor.innerText = addColor;
+        colors.appendChild(newColor);
     }
-  })
-    // j'ajoute un message au cas où le serveur ne répond pas
-  .catch(_error => {
-    alert('Le serveur ne répond pas.');
-  });
+    toCart.addEventListener("click", function () {
+        let productInLocalStorage =  localStorage.getItem('product');
+        // Verification qu'une couleur et une quantité sont bien attribué avant de passer à la tache suivante
+        if(colors.value == "" || quantity.value < 1 || quantity.value > 100){
+            alert("Veuillez choisir une couleur et une quantité comprise entre 1 et 100")
+        }
+        else{
+            // Vérification de l'éxistance d'un panier.
+            if(productInLocalStorage){
+                let valueCart = JSON.parse(productInLocalStorage);
+                console.log(valueCart);
+                let returnCart = valueCart.find(contentValue => contentValue._id == id && contentValue.color == colors.value);
+                let idExist =  valueCart.find(contentValue => contentValue._id == id);
+                if (idExist) {
+                    if (returnCart) {
+                        const checkQuantity = returnCart.quantity + parseInt(quantity.value);
+                        if (checkQuantity > 100) {
+                            alert("La quantité maximum pour un produit est de 100");
+                            quantity.value = 1;
+                        }
+                        else {
+                            returnCart.quantity += parseInt(quantity.value);
+                            alert("La quantité de votre article dans le panier à été mis à jour");
+                            quantity.value = 1;
+                        }
 
+                    }
+                    else {
+                        let existIndex = valueCart.findIndex(contentValue => contentValue._id == id);
+                        valueCart.splice(existIndex, 0, productFormat(data));
+                        alert("Votre article a été ajouté au panier");
+                        quantity.value = 1;
+                    }
+                    cartUpdate(valueCart);
+                }
+                else {
+                    valueCart.unshift(productFormat(data));
+                    alert("Votre article a été ajouté au panier");
+                    quantity.value = 1;
+                }
+                cartUpdate(valueCart);
+            }
+            else{
+                let valueCart = [];
+                valueCart.push(productFormat(data));
+                cartUpdate(valueCart);
+                alert("Votre article a été ajouté au panier");
+                quantity.value = 1;
+            }
+        }
+    });
+    })
+    .catch(error => console.log(error)
+);
 
-// Je récupère les données par rapport aux choix de l'utilisateur
+// Convertir en {object} pour insérer dans le LocalStorage
+function productFormat (data) {
+    return productFormated = {
+    _id: data._id,
+    color: colors.value,
+    quantity: parseInt(quantity.value)
+    };
+};
 
-const selectQuantity = document.getElementById('quantity');
-const selectColors = document.getElementById('colors');
-
-// je configure un eventListener quand l'utilisateur clique sur ajouter au panier
-const addToCart = document.getElementById('addToCart');
-addToCart.addEventListener('click', (event) => {
-  event.preventDefault();
-
-  const selection = {
-    id: newID,
-    // image: imageURL,
-    // alt: imageAlt,
-    // name: title.textContent,
-    // price: price.textContent,
-    color: selectColors.value,
-    quantity: selectQuantity.value,
-  };
-
-  /* je déclare une variable productInLocalStorage 
-  dans laquelle je mets les clés+valeurs dans le local storage
-  JSON.parse permet de convertir les données au format JSON en objet JavaScript */
-  let productInLocalStorage =  JSON.parse(localStorage.getItem('product')); {
-
-    // J'ai ajouté deux conditions, si la quantité n'est pas séléctionnés alors
-    // un pop up s'affiche.
-    if (selectQuantity.value < 1 || selectQuantity.value > 100) {
-      alert('Veuillez selectionnée une quantité entre 1 et 100.')
-      return; 
-    }
-    // Si la couleur n'est pas séléctionnés alors un pop up s'affiche.
-    if (selectColors.value <= 0) {
-      alert('Veuillez selectionné une couleur.')
-      return;
-    }
-
-  
-  }
- 
-  // j'ajoute les produits sélectionnés dans le localStorage
-  const addProductLocalStorage = () => {
-  /* je récupère la sélection de l'utilisateur dans le tableau de l'objet :
-  on peut voir dans la console qu'il y a les données,
-  mais pas encore stockées dans le storage à ce stade */
-
-  productInLocalStorage.push(selection);
-  /* je stocke les données récupérées dans le localStorage :
-  JSON.stringify permet de convertir les données au format JavaScript en JSON 
-  vérifier que key et value dans l'inspecteur contiennent bien des données */
-  localStorage.setItem('product', JSON.stringify(productInLocalStorage));
-  }
-
-  // je crée une boîte de dialogue pour confirmer l'ajout au panier
-  let addConfirm = () => {
-    alert('Le produit a bien été ajouté au panier');
-  }
-
-  let update = false;
-  
-  // s'il y a des produits enregistrés dans le localStorage
-  if (productInLocalStorage) {
-  // verifier que le produit ne soit pas deja dans le localstorage/panier avec la couleur
-   productInLocalStorage.forEach (function (productOk, key) {
-    if (productOk.id == newID && productOk.color == selectColors.value) {
-      productInLocalStorage[key].quantity = parseInt(productOk.quantity) + parseInt(selectQuantity.value);
-      localStorage.setItem('product', JSON.stringify(productInLocalStorage));
-      update = true;
-      addConfirm();
-    }
-  });
-
-  //
-    if (!update) {
-    addProductLocalStorage();
-    addConfirm();
-    }
-  }
-
-  // s'il n'y a aucun produit enregistré dans le localStorage 
-  else {
-    // je crée alors un tableau avec les éléments choisi par l'utilisateur
-    productInLocalStorage = [];
-    addProductLocalStorage();
-    addConfirm();
-  }
-});
+//  Ajout au panier d'un produit
+function cartUpdate (product) {
+    localStorage.setItem('product', JSON.stringify(product));
+    let cartList = localStorage.getItem('cart');
+}

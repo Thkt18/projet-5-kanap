@@ -20,7 +20,7 @@ function fetchProductsInCart() {
   const carts = getProduct();
   for (const productInLocalStorage of carts) {
     // pour chaque produit du panier
-    fetch("http://localhost:3000/api/products/" + productInLocalStorage.id)
+    fetch("http://localhost:3000/api/products/" + productInLocalStorage._id)
     .then((response) => response.json())
     .then((product) => showProductInCart(product, productInLocalStorage))
     .catch((error) => console.log(error));
@@ -142,7 +142,7 @@ function modifQuantity() {
       let getColor = kanap.getAttribute("data-color");
       for (let index = 0; index < productInLocalStorage.length; index++) {
         const productLs = productInLocalStorage[index];
-        if (getId === productLs.id && getColor === productLs.color) {
+        if (getId === productLs._id && getColor === productLs.color) {
           // on vérifie le canapé par son ID et sa couleur pour enregistrer sa nouvelle quantité
           productLs.quantity = newQuantity;
           localStorage.setItem("product", JSON.stringify(productInLocalStorage)); // on enregistre
@@ -158,7 +158,7 @@ function updateQuantity(event, quantityDataId, quantityDataColor) {
   const productInLocalStorage = JSON.parse(localStorage.getItem("product"));
 
   for (let article of productInLocalStorage) {
-    if (article.id === quantityDataId && article.color === quantityDataColor) {
+    if (article._id === quantityDataId && article.color === quantityDataColor) {
         //Quantité entre 1 et 100
       if (article.quantity > 0 && article.quantity < 100) {
         article.quantity = event.target.value;
@@ -178,8 +178,8 @@ function deleteItem(dataId, dataColor) {
   const productInLocalStorageFilter = productInLocalStorage.filter(
     // canapé sélectionné par son id et sa couleur
     (article) =>
-      (article.id !== dataId && article.color !== dataColor) ||
-      (article.id === dataId && article.color !== dataColor)
+      (article._id !== dataId && article.color !== dataColor) ||
+      (article._id === dataId && article.color !== dataColor)
   );
   let newproductInLocalStorage = productInLocalStorageFilter;
   localStorage.setItem("product", JSON.stringify(newproductInLocalStorage));
@@ -233,7 +233,7 @@ let product = [];
 const productInLocalStorage = JSON.parse(localStorage.getItem("product"));
 // console.log(productInLocalStorage);
 for (const element of productInLocalStorage) {
-  product.push(element.id);
+  product.push(element._id);
 }
 
 let btnSubmit = document.getElementById("order");
@@ -255,20 +255,17 @@ let emailRegex =
 // methode test : Teste une correspondance dans une chaîne. Renvoie vrai ou faux
 let contact = {}; //objet formulaire
 
- //REGEX
+//REGEX
 const regexNames = (value) => {
   return /^[A-Za-zéèêëàçâ-]{3,30}$/.test(value);
 };
 
 const regexAdresseAndCity = (value) => {
   return /^[a-zA-Zçéèêôùïâàû0-9\s, '-]{3,60}$/.test(value);
-  //return /^[a-zA-Z0-9.,-_ ]{5,50}[ ]{0,8}$/.test(value);// test de ses regex=> Rubular.com
 };
 
 const regexEmail = (value) => {
-  return /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/.test(
-    value
-  );
+  return /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/.test(value);
 };
 
 // Fonctions qui vérifient la validité des champs de saisis des inputs
